@@ -6,18 +6,17 @@
 
 struct RawMode {
   termios orig;
-  RawMode() { tcgetattr(STDIN_FILENO, &orig); }
-  ~RawMode() { tcsetattr(STDIN_FILENO, TCSANOW, &orig); }
-  void enable() {
+  RawMode() {
+    tcgetattr(STDIN_FILENO, &orig);
     termios raw = orig;
     raw.c_lflag &= ~(ECHO | ICANON); // no echo, byte-by-byte
     tcsetattr(STDIN_FILENO, TCSANOW, &raw);
   }
+  ~RawMode() { tcsetattr(STDIN_FILENO, TCSANOW, &orig); }
 };
 
 int main() {
   RawMode term;
-  term.enable();
   std::setvbuf(stdout, nullptr, _IONBF, 0);
   std::print("(alt+enter to send)> ");
 
@@ -31,9 +30,6 @@ int main() {
         prompt.pop_back();
         std::print("\b \b"); // erase on screen
       }
-    } else if (c == '\n') {
-      prompt += '\n';
-      std::print("\n");
     } else {
       prompt += c;
       std::print("{}", c); // echo
