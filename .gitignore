@@ -1,3 +1,2 @@
-*.o
-keys
-llm
+build/
+.cache/

@@ -1,2 +1,5 @@
 #!/bin/sh
-g++ -std=c++23 llm.cpp -o llm
+cmake --preset debug
+cmake --build --preset debug
+
+./build/debug/llm
