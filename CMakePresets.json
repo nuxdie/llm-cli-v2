@@ -23,7 +23,9 @@
       "inherits": "base",
       "displayName": "Release",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Release"
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_EXE_LINKER_FLAGS_RELEASE": "-s",
+        "CMAKE_INTERPROCEDURAL_OPTIMIZATION_RELEASE": "ON"
       }
     }
   ],
