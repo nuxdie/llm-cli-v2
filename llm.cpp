@@ -16,17 +16,17 @@ int main() {
   while (const char *c_input = rx.input(prompt)) {
     std::string input{c_input};
 
-    if (input.empty())
-      continue;
-    if (input == "exit")
-      break;
+    if (input.empty()) continue;
+    if (input == "exit") break;
 
     rx.history_add(input);
 
     json req_body = {{"message", std::move(input)}};
     auto res = cpr::Post(
-        cpr::Url{"https://httpbin.org/post"}, cpr::Body{req_body.dump()},
-        cpr::Header{{"Content-Type", "application/json"}});
+        cpr::Url{"https://httpbin.org/post"},
+        cpr::Body{req_body.dump()},
+        cpr::Header{{"Content-Type", "application/json"}}
+    );
 
     if (res.status_code == 200) {
       try {
@@ -36,8 +36,11 @@ int main() {
         std::print("Failed to parse API Resp: {}\n\n", err.what());
       }
     } else {
-      std::print("API Req Failed!\nStatus code: {}\nError: {}\n\n",
-                 res.status_code, res.error.message);
+      std::print(
+          "API Req Failed!\nStatus code: {}\nError: {}\n\n",
+          res.status_code,
+          res.error.message
+      );
     }
   }
 
