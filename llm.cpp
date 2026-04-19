@@ -17,7 +17,7 @@ void send_api_request(std::string input) {
   if (res.status_code == 200) {
     try {
       auto res_json = json::parse(res.text);
-      std::print("API Resp:\n {}\n\n", res_json["json"].dump(2));
+      std::print("API Resp:\n{}\n\n", res_json["json"].dump(2));
     } catch (const json::parse_error &err) {
       std::print("Failed to parse API Resp: {}\n\n", err.what());
     }
