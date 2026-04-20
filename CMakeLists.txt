@@ -24,9 +24,26 @@ FetchContent_Declare(json
 )
 FetchContent_MakeAvailable(json)
 
+set(ENV_FILE "${CMAKE_SOURCE_DIR}/.env")
+if(NOT EXISTS "${ENV_FILE}")
+  message(FATAL_ERROR ".env file not found at ${ENV_FILE}")
+endif()
+file(STRINGS "${ENV_FILE}" ENV_LINES)
+foreach(line IN LISTS ENV_LINES)
+  if(line MATCHES "^OPENROUTER_API_KEY=(.*)$")
+    set(OPENROUTER_API_KEY "${CMAKE_MATCH_1}")
+  endif()
+endforeach()
+if(NOT DEFINED OPENROUTER_API_KEY OR OPENROUTER_API_KEY STREQUAL "")
+  message(FATAL_ERROR "OPENROUTER_API_KEY not found in .env")
+endif()
+
 add_executable(llm llm.cpp)
 target_link_libraries(llm PRIVATE
   replxx
   cpr::cpr
   nlohmann_json::nlohmann_json
+)
+target_compile_definitions(llm PRIVATE
+  OPENROUTER_API_KEY="${OPENROUTER_API_KEY}"
 )

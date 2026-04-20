@@ -7,17 +7,25 @@
 using json = nlohmann::json;
 
 void send_api_request(std::string input) {
-  json req_body = {{"message", std::move(input)}};
+  json req_body = {
+      {"model", "openrouter/elephant-alpha"},
+      {"messages",
+       json::array({{{"role", "user"}, {"content", std::move(input)}}})}
+  };
   auto res = cpr::Post(
-      cpr::Url{"https://httpbin.org/post"},
+      cpr::Url{"https://openrouter.ai/api/v1/chat/completions"},
       cpr::Body{req_body.dump()},
-      cpr::Header{{"Content-Type", "application/json"}}
+      cpr::Header{
+          {"Content-Type", "application/json"},
+          {"Authorization", "Bearer " + std::string(OPENROUTER_API_KEY)}
+      }
   );
 
   if (res.status_code == 200) {
     try {
       auto res_json = json::parse(res.text);
-      std::print("API Resp:\n{}\n\n", res_json["json"].dump(2));
+      auto message = res_json["choices"][0]["message"]["content"];
+      std::print("> {}\n\n", message.dump());
     } catch (const json::parse_error &err) {
       std::print("Failed to parse API Resp: {}\n\n", err.what());
     }
