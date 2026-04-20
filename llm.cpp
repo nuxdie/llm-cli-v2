@@ -43,9 +43,7 @@ int main() {
   rx.install_window_change_handler(); // Automatically handles terminal resizing
   rx.set_max_history_size(100);
 
-  const std::string prompt = "λ ";
-
-  while (const char *c_input = rx.input(prompt)) {
+  while (const char *c_input = rx.input("λ ")) {
     std::string input{c_input};
 
     if (input.empty()) continue;
